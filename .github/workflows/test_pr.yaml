@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test3.11:
+  test3_11:
     name: py 3.11
     runs-on: ubuntu-latest
     steps:
@@ -25,7 +25,7 @@ jobs:
         python --version
         pip install -q -e .[dev]
         python -m unittest discover --pattern '*test*.py'
-  test3.10:
+  test3_10:
     name: py 3.10
     runs-on: ubuntu-latest
     steps:
@@ -38,7 +38,7 @@ jobs:
         python --version
         pip install -q -e .[dev]
         python -m unittest discover --pattern '*test*.py'
-  test3.9:
+  test3_9:
     name: py 3.9
     runs-on: ubuntu-latest
     steps:
