@@ -260,6 +260,7 @@ def chat(
 ) -> discuss_types.ChatResponse:
     """Calls the API and returns a `types.ChatResponse` containing the response.
 
+
     Args:
         model: Which model to call, as a string or a `types.Model`.
         context: Text that should be provided to the model first, to ground the response.
