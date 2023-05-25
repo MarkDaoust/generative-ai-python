@@ -51,6 +51,7 @@ extras_require = {
         "pandas",
         "pytype",
         "pyyaml",
+        "tensorflow-docs"
     ],
 }
 

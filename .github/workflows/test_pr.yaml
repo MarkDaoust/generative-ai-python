@@ -1,0 +1,26 @@
+# Notebook-related checks
+
+name: Run all tests
+
+on:
+  # Relevant PRs
+  pull_request:
+    paths:
+    - "google/**"
+    - "tests/**"
+  # Allow manual runs
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run tests py 3.11
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - name: run tests
+      run: |
+        pip install -e .[dev]
+        python -m unittest discover --pattern '*test*.py'
