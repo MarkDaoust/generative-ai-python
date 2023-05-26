@@ -64,5 +64,5 @@ jobs:
         python --version
         pip install -q -e .
         pip install -q black
-        black .
+        black . --check
         
