@@ -14,6 +14,8 @@
 # limitations under the License.
 from __future__ import annotations
 
+def proto_to_dict(self):
+    return type(self).to_dict(self, use_integers_for_enums=True, including_default_value_fields=False)
 
 def flatten_update_paths(updates):
     new_updates = {}

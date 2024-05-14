@@ -19,6 +19,8 @@ from google.generativeai import string_utils
 from google.generativeai.types import content_types
 from google.generativeai.types import generation_types
 from google.generativeai.types import safety_types
+from google.generativeai import utils
+
 
 
 class GenerativeModel:
@@ -737,7 +739,7 @@ class ChatSession:
         _model = str(self.model).replace("\n", "\n" + " " * 4)
 
         def content_repr(x):
-            return f"glm.Content({_dict_repr.repr(type(x).to_dict(x))})"
+            return f"glm.Content({_dict_repr.repr(utils.proto_to_dict(x))})"
 
         try:
             history = list(self.history)

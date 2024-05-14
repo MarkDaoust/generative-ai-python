@@ -34,6 +34,8 @@ from google.ai import generativelanguage as glm
 from google.generativeai import string_utils
 from google.generativeai.types import content_types
 from google.generativeai.responder import _rename_schema_fields
+from google.generativeai import utils
+
 
 __all__ = [
     "AsyncGenerateContentResponse",
@@ -428,7 +430,7 @@ class BaseGenerateContentResponse:
         else:
             _iterator = f"<{self._iterator.__class__.__name__}>"
 
-        as_dict = type(self._result).to_dict(self._result)
+        as_dict = utils.proto_to_dict(self._result)
         json_str = json.dumps(as_dict, indent=2)
 
         _result = f"glm.GenerateContentResponse({json_str})"

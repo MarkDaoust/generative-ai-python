@@ -25,6 +25,7 @@ from google.generativeai.client import get_default_retriever_client
 from google.generativeai.client import get_default_retriever_async_client
 from google.generativeai.types.model_types import idecode_time
 from google.generativeai.types import retriever_types
+from google.generativeai import utils
 
 
 def create_corpus(
@@ -67,7 +68,7 @@ def create_corpus(
 
     request = glm.CreateCorpusRequest(corpus=corpus)
     response = client.create_corpus(request, **request_options)
-    response = type(response).to_dict(response)
+    response = utils.proto_to_dict(response)
     idecode_time(response, "create_time")
     idecode_time(response, "update_time")
     response = retriever_types.Corpus(**response)
@@ -96,7 +97,7 @@ async def create_corpus_async(
 
     request = glm.CreateCorpusRequest(corpus=corpus)
     response = await client.create_corpus(request, **request_options)
-    response = type(response).to_dict(response)
+    response = utils.proto_to_dict(response)
     idecode_time(response, "create_time")
     idecode_time(response, "update_time")
     response = retriever_types.Corpus(**response)
@@ -129,7 +130,7 @@ def get_corpus(
 
     request = glm.GetCorpusRequest(name=name)
     response = client.get_corpus(request, **request_options)
-    response = type(response).to_dict(response)
+    response = utils.proto_to_dict(response)
     idecode_time(response, "create_time")
     idecode_time(response, "update_time")
     response = retriever_types.Corpus(**response)
@@ -153,7 +154,7 @@ async def get_corpus_async(
 
     request = glm.GetCorpusRequest(name=name)
     response = await client.get_corpus(request, **request_options)
-    response = type(response).to_dict(response)
+    response = utils.proto_to_dict(response)
     idecode_time(response, "create_time")
     idecode_time(response, "update_time")
     response = retriever_types.Corpus(**response)
@@ -232,7 +233,7 @@ def list_corpora(
 
     request = glm.ListCorporaRequest(page_size=page_size)
     for corpus in client.list_corpora(request, **request_options):
-        corpus = type(corpus).to_dict(corpus)
+        corpus = utils.proto_to_dict(corpus)
         idecode_time(corpus, "create_time")
         idecode_time(corpus, "update_time")
         yield retriever_types.Corpus(**corpus)
@@ -253,7 +254,7 @@ async def list_corpora_async(
 
     request = glm.ListCorporaRequest(page_size=page_size)
     async for corpus in await client.list_corpora(request, **request_options):
-        corpus = type(corpus).to_dict(corpus)
+        corpus = utils.proto_to_dict(corpus)
         idecode_time(corpus, "create_time")
         idecode_time(corpus, "update_time")
         yield retriever_types.Corpus(**corpus)

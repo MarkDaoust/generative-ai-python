@@ -69,7 +69,7 @@ class UnitTests(parameterized.TestCase):
                 {"start_index": 55, "end_index": 92, "uri": "https://google.com"},
             ]
         }
-        self.assertEqual(expected, type(result).to_dict(result))
+        self.assertEqual(expected, utils.proto_to_dict(result))
 
     def test_join_safety_ratings_list(self):
         ratings = [
@@ -97,7 +97,7 @@ class UnitTests(parameterized.TestCase):
             {"category": 4, "probability": 2, "blocked": False},
             {"category": 1, "probability": 2, "blocked": False},
         ]
-        self.assertEqual(expected, [type(r).to_dict(r) for r in result])
+        self.assertEqual(expected, [utils.proto_to_dict(r) for r in result])
 
     def test_join_contents(self):
         contents = [
@@ -120,7 +120,7 @@ class UnitTests(parameterized.TestCase):
             "role": "assistant",
         }
 
-        self.assertEqual(expected, type(result).to_dict(result))
+        self.assertEqual(expected, utils.proto_to_dict(result))
 
     def test_many_join_contents(self):
         import string
@@ -135,7 +135,7 @@ class UnitTests(parameterized.TestCase):
             "role": "assistant",
         }
 
-        self.assertEqual(expected, type(result).to_dict(result))
+        self.assertEqual(expected, utils.proto_to_dict(result))
 
     def test_join_candidates(self):
         candidates = [
@@ -209,7 +209,7 @@ class UnitTests(parameterized.TestCase):
             "token_count": 0,
         }
 
-        self.assertEqual(expected, type(result).to_dict(result))
+        self.assertEqual(expected, utils.proto_to_dict(result))
 
     def test_join_prompt_feedbacks(self):
         feedbacks = [
@@ -229,7 +229,7 @@ class UnitTests(parameterized.TestCase):
         ]
         result = generation_types._join_prompt_feedbacks(feedbacks)
         expected = feedbacks[0]
-        self.assertEqual(type(expected).to_dict(expected), type(result).to_dict(result))
+        self.assertEqual(utils.proto_to_dict(expected), utils.proto_to_dict(result))
 
     CANDIDATE_LISTS = [
         [
@@ -398,7 +398,7 @@ class UnitTests(parameterized.TestCase):
     def test_join_candidates(self):
         candidate_lists = [[glm.Candidate(c) for c in cl] for cl in self.CANDIDATE_LISTS]
         result = generation_types._join_candidate_lists(candidate_lists)
-        self.assertEqual(self.MERGED_CANDIDATES, [type(r).to_dict(r) for r in result])
+        self.assertEqual(self.MERGED_CANDIDATES, [utils.proto_to_dict(r) for r in result])
 
     def test_join_chunks(self):
         chunks = [glm.GenerateContentResponse(candidates=cl) for cl in self.CANDIDATE_LISTS]
@@ -428,7 +428,7 @@ class UnitTests(parameterized.TestCase):
             },
         )
 
-        self.assertEqual(type(expected).to_dict(expected), type(result).to_dict(expected))
+        self.assertEqual(utils.proto_to_dict(expected), utils.proto_to_dict(result))
 
     def test_generate_content_response_iterator_end_to_end(self):
         chunks = [glm.GenerateContentResponse(candidates=cl) for cl in self.CANDIDATE_LISTS]
@@ -443,12 +443,12 @@ class UnitTests(parameterized.TestCase):
         # It yields the chunks as given.
         for c1, c2 in zip(chunks, response):
             c2 = c2._result
-            self.assertEqual(type(c1).to_dict(c1), type(c2).to_dict(c2))
+            self.assertEqual(utils.proto_to_dict(c1), utils.proto_to_dict(c2))
 
         # The final result is identical to _join_chunks's output.
         self.assertEqual(
-            type(merged).to_dict(merged),
-            type(response._result).to_dict(response._result),
+            utils.proto_to_dict(merged),
+            utils.proto_to_dict(response._result),
         )
 
     def test_generate_content_response_multiple_iterators(self):
@@ -507,7 +507,7 @@ class UnitTests(parameterized.TestCase):
 
         for chunk in response:
             self.assertEqual(
-                type(raw_response).to_dict(raw_response), type(chunk._result).to_dict(chunk._result)
+                utils.proto_to_dict(raw_response), utils.proto_to_dict(chunk._result)
             )
 
     def test_repr_for_generate_content_response_from_response(self):
@@ -531,13 +531,8 @@ class UnitTests(parameterized.TestCase):
                           {
                             "text": "Hello world!"
                           }
-                        ],
-                        "role": ""
-                      },
-                      "finish_reason": 0,
-                      "safety_ratings": [],
-                      "token_count": 0,
-                      "grounding_attributions": []
+                        ]
+                      }
                     }
                   ]
                 }),
@@ -567,13 +562,8 @@ class UnitTests(parameterized.TestCase):
                           {
                             "text": "a"
                           }
-                        ],
-                        "role": ""
-                      },
-                      "finish_reason": 0,
-                      "safety_ratings": [],
-                      "token_count": 0,
-                      "grounding_attributions": []
+                        ]
+                      }
                     }
                   ]
                 }),

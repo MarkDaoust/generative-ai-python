@@ -28,6 +28,8 @@ from google.generativeai import string_utils
 from google.generativeai.types import text_types
 from google.generativeai.types import model_types
 from google.generativeai.types import content_types
+from google.generativeai import utils
+
 
 DEFAULT_EMB_MODEL = "models/embedding-001"
 EMBEDDING_MAX_BATCH_SIZE = 100
@@ -196,7 +198,7 @@ def embed_content(
                 embedding_request,
                 **request_options,
             )
-            embedding_dict = type(embedding_response).to_dict(embedding_response)
+            embedding_dict = utils.proto_to_dict(embedding_response)
             result["embedding"].extend(e["values"] for e in embedding_dict["embeddings"])
         return result
     else:
@@ -211,7 +213,7 @@ def embed_content(
             embedding_request,
             **request_options,
         )
-        embedding_dict = type(embedding_response).to_dict(embedding_response)
+        embedding_dict = utils.proto_to_dict(embedding_response)
         embedding_dict["embedding"] = embedding_dict["embedding"]["values"]
         return embedding_dict
 
@@ -287,7 +289,7 @@ async def embed_content_async(
                 embedding_request,
                 **request_options,
             )
-            embedding_dict = type(embedding_response).to_dict(embedding_response)
+            embedding_dict = utils.proto_to_dict(embedding_response)
             result["embedding"].extend(e["values"] for e in embedding_dict["embeddings"])
         return result
     else:
@@ -302,6 +304,6 @@ async def embed_content_async(
             embedding_request,
             **request_options,
         )
-        embedding_dict = type(embedding_response).to_dict(embedding_response)
+        embedding_dict = utils.proto_to_dict(embedding_response)
         embedding_dict["embedding"] = embedding_dict["embedding"]["values"]
         return embedding_dict

@@ -26,6 +26,8 @@ from google.generativeai.client import get_dafault_permission_client
 from google.generativeai.client import get_dafault_permission_async_client
 from google.generativeai.utils import flatten_update_paths
 from google.generativeai import string_utils
+from google.generativeai import utils
+
 
 
 GranteeType = glm.Permission.GranteeType
@@ -227,7 +229,7 @@ class Permission:
             client = get_dafault_permission_client()
         get_perm_request = glm.GetPermissionRequest(name=name)
         get_perm_response = client.get_permission(request=get_perm_request)
-        get_perm_response = type(get_perm_response).to_dict(get_perm_response)
+        get_perm_response = utils.proto_to_dict(get_perm_response)
         return cls(**get_perm_response)
 
     @classmethod
@@ -243,7 +245,7 @@ class Permission:
             client = get_dafault_permission_async_client()
         get_perm_request = glm.GetPermissionRequest(name=name)
         get_perm_response = await client.get_permission(request=get_perm_request)
-        get_perm_response = type(get_perm_response).to_dict(get_perm_response)
+        get_perm_response = utils.proto_to_dict(get_perm_response)
         return cls(**get_perm_response)
 
 
@@ -319,7 +321,7 @@ class Permissions:
             role=role, grantee_type=grantee_type, email_address=email_address
         )
         permission_response = client.create_permission(request=request)
-        permission_response = type(permission_response).to_dict(permission_response)
+        permission_response = utils.proto_to_dict(permission_response)
         return Permission(**permission_response)
 
     async def create_async(
@@ -339,7 +341,7 @@ class Permissions:
             role=role, grantee_type=grantee_type, email_address=email_address
         )
         permission_response = await client.create_permission(request=request)
-        permission_response = type(permission_response).to_dict(permission_response)
+        permission_response = utils.proto_to_dict(permission_response)
         return Permission(**permission_response)
 
     def list(
@@ -364,7 +366,7 @@ class Permissions:
             parent=self.parent, page_size=page_size  # pytype: disable=attribute-error
         )
         for permission in client.list_permissions(request):
-            permission = type(permission).to_dict(permission)
+            permission = utils.proto_to_dict(permission)
             yield Permission(**permission)
 
     async def list_async(
@@ -382,7 +384,7 @@ class Permissions:
             parent=self.parent, page_size=page_size  # pytype: disable=attribute-error
         )
         async for permission in await client.list_permissions(request):
-            permission = type(permission).to_dict(permission)
+            permission = utils.proto_to_dict(permission)
             yield Permission(**permission)
 
     def transfer_ownership(

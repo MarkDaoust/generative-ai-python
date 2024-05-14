@@ -293,6 +293,8 @@ def convert_candidate_enums(candidates):
     result = []
     for candidate in candidates:
         candidate = candidate.copy()
-        candidate["safety_ratings"] = convert_ratings_to_enum(candidate["safety_ratings"])
+        safety_ratings = candidate.get('safety_ratings', None)
+        if safety_ratings is not None:
+          candidate["safety_ratings"] = convert_ratings_to_enum(candidate["safety_ratings"])
         result.append(candidate)
     return result

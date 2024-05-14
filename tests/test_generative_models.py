@@ -611,7 +611,7 @@ class CUJTests(parameterized.TestCase):
 
         for obr in self.observed_requests:
             self.assertLen(obr.tools, 1)
-            self.assertEqual(type(obr.tools[0]).to_dict(obr.tools[0]), tools)
+            self.assertEqual(utils.proto_to_dict(obr.tools[0]), tools)
 
     @parameterized.named_parameters(
         dict(
@@ -703,8 +703,8 @@ class CUJTests(parameterized.TestCase):
 
         req = self.observed_requests[0]
 
-        self.assertLen(type(req.tools[0]).to_dict(req.tools[0]).get("function_declarations"), 3)
-        self.assertEqual(type(req.tool_config).to_dict(req.tool_config), expected_tool_config)
+        self.assertLen(utils.proto_to_dict(req.tools[0]).get("function_declarations"), 3)
+        self.assertEqual(utils.proto_to_dict(req.tool_config), expected_tool_config)
 
     @parameterized.named_parameters(
         ["bare_str", "talk like a pirate", simple_part("talk like a pirate")],
@@ -737,7 +737,7 @@ class CUJTests(parameterized.TestCase):
         self.responses["count_tokens"] = [glm.CountTokensResponse(total_tokens=7)]
         model = generative_models.GenerativeModel("gemini-pro-vision")
         response = model.count_tokens(contents)
-        self.assertEqual(type(response).to_dict(response), {"total_tokens": 7})
+        self.assertEqual(utils.proto_to_dict(response), {"total_tokens": 7})
 
     @parameterized.named_parameters(
         [
@@ -809,13 +809,8 @@ class CUJTests(parameterized.TestCase):
                           {
                             "text": "world!"
                           }
-                        ],
-                        "role": ""
-                      },
-                      "finish_reason": 0,
-                      "safety_ratings": [],
-                      "token_count": 0,
-                      "grounding_attributions": []
+                        ]
+                      }
                     }
                   ]
                 }),
@@ -847,13 +842,8 @@ class CUJTests(parameterized.TestCase):
                           {
                             "text": "first"
                           }
-                        ],
-                        "role": ""
-                      },
-                      "finish_reason": 0,
-                      "safety_ratings": [],
-                      "token_count": 0,
-                      "grounding_attributions": []
+                        ]
+                      }
                     }
                   ]
                 }),
@@ -877,28 +867,14 @@ class CUJTests(parameterized.TestCase):
                           {
                             "text": "first second"
                           }
-                        ],
-                        "role": ""
+                        ]
                       },
                       "index": 0,
-                      "citation_metadata": {
-                        "citation_sources": []
-                      },
-                      "finish_reason": 0,
-                      "safety_ratings": [],
-                      "token_count": 0,
-                      "grounding_attributions": []
+                      "citation_metadata": {}
                     }
                   ],
-                  "prompt_feedback": {
-                    "block_reason": 0,
-                    "safety_ratings": []
-                  },
-                  "usage_metadata": {
-                    "prompt_token_count": 0,
-                    "candidates_token_count": 0,
-                    "total_token_count": 0
-                  }
+                  "prompt_feedback": {},
+                  "usage_metadata": {}
                 }),
             )"""
         )
@@ -920,28 +896,14 @@ class CUJTests(parameterized.TestCase):
                           {
                             "text": "first second third"
                           }
-                        ],
-                        "role": ""
+                        ]
                       },
                       "index": 0,
-                      "citation_metadata": {
-                        "citation_sources": []
-                      },
-                      "finish_reason": 0,
-                      "safety_ratings": [],
-                      "token_count": 0,
-                      "grounding_attributions": []
+                      "citation_metadata": {}
                     }
                   ],
-                  "prompt_feedback": {
-                    "block_reason": 0,
-                    "safety_ratings": []
-                  },
-                  "usage_metadata": {
-                    "prompt_token_count": 0,
-                    "candidates_token_count": 0,
-                    "total_token_count": 0
-                  }
+                  "prompt_feedback": {},
+                  "usage_metadata": {}
                 }),
             )"""
         )
@@ -970,10 +932,8 @@ class CUJTests(parameterized.TestCase):
                 iterator=<generator>,
                 result=glm.GenerateContentResponse({
                   "prompt_feedback": {
-                    "block_reason": 1,
-                    "safety_ratings": []
-                  },
-                  "candidates": []
+                    "block_reason": 1
+                  }
                 }),
             ),
             error=<BlockedPromptException> prompt_feedback {
@@ -1028,28 +988,14 @@ class CUJTests(parameterized.TestCase):
                           {
                             "text": "123"
                           }
-                        ],
-                        "role": ""
+                        ]
                       },
                       "index": 0,
-                      "citation_metadata": {
-                        "citation_sources": []
-                      },
-                      "finish_reason": 0,
-                      "safety_ratings": [],
-                      "token_count": 0,
-                      "grounding_attributions": []
+                      "citation_metadata": {}
                     }
                   ],
-                  "prompt_feedback": {
-                    "block_reason": 0,
-                    "safety_ratings": []
-                  },
-                  "usage_metadata": {
-                    "prompt_token_count": 0,
-                    "candidates_token_count": 0,
-                    "total_token_count": 0
-                  }
+                  "prompt_feedback": {},
+                  "usage_metadata": {}
                 }),
             ),
             error=<ValueError> """
@@ -1101,28 +1047,15 @@ class CUJTests(parameterized.TestCase):
                           {
                             "text": "abc"
                           }
-                        ],
-                        "role": ""
+                        ]
                       },
                       "finish_reason": 3,
                       "index": 0,
-                      "citation_metadata": {
-                        "citation_sources": []
-                      },
-                      "safety_ratings": [],
-                      "token_count": 0,
-                      "grounding_attributions": []
+                      "citation_metadata": {}
                     }
                   ],
-                  "prompt_feedback": {
-                    "block_reason": 0,
-                    "safety_ratings": []
-                  },
-                  "usage_metadata": {
-                    "prompt_token_count": 0,
-                    "candidates_token_count": 0,
-                    "total_token_count": 0
-                  }
+                  "prompt_feedback": {},
+                  "usage_metadata": {}
                 }),
             ),
             error=<StopCandidateException> index: 0

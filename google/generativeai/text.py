@@ -27,6 +27,8 @@ from google.generativeai.types import text_types
 from google.generativeai.types import model_types
 from google.generativeai import models
 from google.generativeai.types import safety_types
+from google.generativeai import utils
+
 
 DEFAULT_TEXT_MODEL = "models/text-bison-001"
 EMBEDDING_MAX_BATCH_SIZE = 100
@@ -238,12 +240,16 @@ def _generate_response(
         client = get_default_text_client()
 
     response = client.generate_text(request, **request_options)
-    response = type(response).to_dict(response)
+    response = utils.proto_to_dict(response)
 
-    response["filters"] = safety_types.convert_filters_to_enums(response["filters"])
-    response["safety_feedback"] = safety_types.convert_safety_feedback_to_enums(
-        response["safety_feedback"]
-    )
+    filters = response.get('filters', None)
+    if filters is not None:
+      response["filters"] = safety_types.convert_filters_to_enums(filters)
+    safety_feedback = response.get('safety_feedback', None)
+    if safety_feedback is  not None:
+        response["safety_feedback"] = safety_types.convert_safety_feedback_to_enums(
+            response["safety_feedback"]
+        )
     response["candidates"] = safety_types.convert_candidate_enums(response["candidates"])
 
     return Completion(_client=client, **response)
@@ -268,7 +274,7 @@ def count_text_tokens(
         **request_options,
     )
 
-    return type(result).to_dict(result)
+    return utils.proto_to_dict(result)
 
 
 @overload
@@ -324,7 +330,7 @@ def generate_embeddings(
             embedding_request,
             **request_options,
         )
-        embedding_dict = type(embedding_response).to_dict(embedding_response)
+        embedding_dict = utils.proto_to_dict(embedding_response)
         embedding_dict["embedding"] = embedding_dict["embedding"]["value"]
     else:
         result = {"embedding": []}
@@ -335,7 +341,7 @@ def generate_embeddings(
                 embedding_request,
                 **request_options,
             )
-            embedding_dict = type(embedding_response).to_dict(embedding_response)
+            embedding_dict = utils.proto_to_dict(embedding_response)
             result["embedding"].extend(e["value"] for e in embedding_dict["embeddings"])
         return result
 

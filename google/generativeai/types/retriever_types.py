@@ -29,7 +29,8 @@ from google.generativeai.client import get_default_retriever_async_client
 from google.generativeai import string_utils
 from google.generativeai.types import permission_types
 from google.generativeai.types.model_types import idecode_time
-from google.generativeai.utils import flatten_update_paths
+from google.generativeai import utils
+
 
 _VALID_NAME = r"[a-z0-9]([a-z0-9-]{0,38}[a-z0-9])$"
 NAME_ERROR_MSG = """The `name` must consist of alphanumeric characters (or -) and be 40 or fewer characters; or be empty. The name you entered:
@@ -212,7 +213,7 @@ class CustomMetadata:
 
     def _to_dict(self):
         proto = self._to_proto()
-        return type(proto).to_dict(proto)
+        return utils.proto_to_dict(proto)
 
 
 CustomMetadataOptions = Union[CustomMetadata, glm.CustomMetadata, dict]
@@ -223,7 +224,7 @@ def make_custom_metadata(cm: CustomMetadataOptions) -> CustomMetadata:
         return cm
 
     if isinstance(cm, glm.CustomMetadata):
-        cm = type(cm).to_dict(cm)
+        cm = utils.proto_to_dict(cm)
 
     if isinstance(cm, dict):
         return CustomMetadata._from_dict(cm)
@@ -419,7 +420,7 @@ class Corpus:
         if client is None:
             client = get_default_retriever_client()
 
-        updates = flatten_update_paths(updates)
+        updates = utils.flatten_update_paths(updates)
         # At this time, only `display_name` can be updated
         for item in updates:
             if item != "display_name":
@@ -448,7 +449,7 @@ class Corpus:
         if client is None:
             client = get_default_retriever_async_client()
 
-        updates = flatten_update_paths(updates)
+        updates = utils.flatten_update_paths(updates)
         # At this time, only `display_name` can be updated
         for item in updates:
             if item != "display_name":
@@ -506,7 +507,7 @@ class Corpus:
             results_count=results_count,
         )
         response = client.query_corpus(request, **request_options)
-        response = type(response).to_dict(response)
+        response = utils.proto_to_dict(response)
 
         # Create a RelevantChunk object for each chunk listed in response['relevant_chunks']
         relevant_chunks = []
@@ -549,7 +550,7 @@ class Corpus:
             results_count=results_count,
         )
         response = await client.query_corpus(request, **request_options)
-        response = type(response).to_dict(response)
+        response = utils.proto_to_dict(response)
 
         # Create a RelevantChunk object for each chunk listed in response['relevant_chunks']
         relevant_chunks = []
@@ -719,7 +720,7 @@ class Corpus:
 
 
 def decode_document(document):
-    document = type(document).to_dict(document)
+    document = utils.proto_to_dict(document)
     idecode_time(document, "create_time")
     idecode_time(document, "update_time")
     return Document(**document)
@@ -734,9 +735,9 @@ class Document(abc.ABC):
 
     name: str
     display_name: str
-    custom_metadata: list[CustomMetadata]
-    create_time: datetime.datetime
-    update_time: datetime.datetime
+    custom_metadata: list[CustomMetadata] | None = None
+    create_time: datetime.datetime | None = None
+    update_time: datetime.datetime | None = None
 
     def create_chunk(
         self,
@@ -1072,7 +1073,7 @@ class Document(abc.ABC):
             results_count=results_count,
         )
         response = client.query_document(request, **request_options)
-        response = type(response).to_dict(response)
+        response = utils.proto_to_dict(response)
 
         # Create a RelevantChunk object for each chunk listed in response['relevant_chunks']
         relevant_chunks = []
@@ -1115,7 +1116,7 @@ class Document(abc.ABC):
             results_count=results_count,
         )
         response = await client.query_document(request, **request_options)
-        response = type(response).to_dict(response)
+        response = utils.proto_to_dict(response)
 
         # Create a RelevantChunk object for each chunk listed in response['relevant_chunks']
         relevant_chunks = []
@@ -1155,7 +1156,7 @@ class Document(abc.ABC):
         if client is None:
             client = get_default_retriever_client()
 
-        updates = flatten_update_paths(updates)
+        updates = utils.flatten_update_paths(updates)
         # At this time, only `display_name` can be updated
         for item in updates:
             if item != "display_name":
@@ -1183,7 +1184,7 @@ class Document(abc.ABC):
         if client is None:
             client = get_default_retriever_async_client()
 
-        updates = flatten_update_paths(updates)
+        updates = utils.flatten_update_paths(updates)
         # At this time, only `display_name` can be updated
         for item in updates:
             if item != "display_name":
@@ -1222,7 +1223,7 @@ class Document(abc.ABC):
 
         if isinstance(chunks, glm.BatchUpdateChunksRequest):
             response = client.batch_update_chunks(chunks)
-            response = type(response).to_dict(response)
+            response = utils.proto_to_dict(response)
             return response
 
         _requests = []
@@ -1240,7 +1241,7 @@ class Document(abc.ABC):
                 # When handling updates, use to the _to_proto result of the custom_metadata
                 chunk_to_update.custom_metadata = c_data
 
-                updates = flatten_update_paths(value)
+                updates = utils.flatten_update_paths(value)
                 # At this time, only `data` can be updated
                 for item in updates:
                     if item != "data.string_value":
@@ -1257,7 +1258,7 @@ class Document(abc.ABC):
                 )
             request = glm.BatchUpdateChunksRequest(parent=self.name, requests=_requests)
             response = client.batch_update_chunks(request, **request_options)
-            response = type(response).to_dict(response)
+            response = utils.proto_to_dict(response)
             return response
         if isinstance(chunks, Iterable) and not isinstance(chunks, Mapping):
             for chunk in chunks:
@@ -1276,7 +1277,7 @@ class Document(abc.ABC):
                     # When handling updates, use to the _to_proto result of the custom_metadata
                     chunk_to_update.custom_metadata = c_data
 
-                    updates = flatten_update_paths(chunk[1])
+                    updates = utils.flatten_update_paths(chunk[1])
                     field_mask = field_mask_pb2.FieldMask()
                     for path in updates.keys():
                         field_mask.paths.append(path)
@@ -1292,7 +1293,7 @@ class Document(abc.ABC):
                     )
             request = glm.BatchUpdateChunksRequest(parent=self.name, requests=_requests)
             response = client.batch_update_chunks(request, **request_options)
-            response = type(response).to_dict(response)
+            response = utils.proto_to_dict(response)
             return response
 
     async def batch_update_chunks_async(
@@ -1310,7 +1311,7 @@ class Document(abc.ABC):
 
         if isinstance(chunks, glm.BatchUpdateChunksRequest):
             response = client.batch_update_chunks(chunks)
-            response = type(response).to_dict(response)
+            response = utils.proto_to_dict(response)
             return response
 
         _requests = []
@@ -1328,7 +1329,7 @@ class Document(abc.ABC):
                 # When handling updates, use to the _to_proto result of the custom_metadata
                 chunk_to_update.custom_metadata = c_data
 
-                updates = flatten_update_paths(value)
+                updates = utils.flatten_update_paths(value)
                 # At this time, only `data` can be updated
                 for item in updates:
                     if item != "data.string_value":
@@ -1345,7 +1346,7 @@ class Document(abc.ABC):
                 )
             request = glm.BatchUpdateChunksRequest(parent=self.name, requests=_requests)
             response = await client.batch_update_chunks(request, **request_options)
-            response = type(response).to_dict(response)
+            response = utils.proto_to_dict(response)
             return response
         if isinstance(chunks, Iterable) and not isinstance(chunks, Mapping):
             for chunk in chunks:
@@ -1364,7 +1365,7 @@ class Document(abc.ABC):
                     # When handling updates, use to the _to_proto result of the custom_metadata
                     chunk_to_update.custom_metadata = c_data
 
-                    updates = flatten_update_paths(chunk[1])
+                    updates = utils.flatten_update_paths(chunk[1])
                     field_mask = field_mask_pb2.FieldMask()
                     for path in updates.keys():
                         field_mask.paths.append(path)
@@ -1380,7 +1381,7 @@ class Document(abc.ABC):
                     )
             request = glm.BatchUpdateChunksRequest(parent=self.name, requests=_requests)
             response = await client.batch_update_chunks(request, **request_options)
-            response = type(response).to_dict(response)
+            response = utils.proto_to_dict(response)
             return response
 
     def delete_chunk(
@@ -1497,7 +1498,7 @@ class Document(abc.ABC):
 
 
 def decode_chunk(chunk: glm.Chunk) -> Chunk:
-    chunk = type(chunk).to_dict(chunk)
+    chunk = utils.proto_to_dict(chunk)
     idecode_time(chunk, "create_time")
     idecode_time(chunk, "update_time")
     return Chunk(**chunk)
@@ -1519,17 +1520,17 @@ class Chunk(abc.ABC):
 
     name: str
     data: ChunkData
-    custom_metadata: list[CustomMetadata] | None
-    state: State
-    create_time: datetime.datetime | None
-    update_time: datetime.datetime | None
+    custom_metadata: list[CustomMetadata] | None = None
+    state: State = State.STATE_UNSPECIFIED
+    create_time: datetime.datetime | None = None
+    update_time: datetime.datetime | None = None
 
     def __init__(
         self,
         name: str,
         data: ChunkData | str,
-        custom_metadata: Iterable[CustomMetadata] | None,
-        state: State,
+        custom_metadata: Iterable[CustomMetadata] | None = None,
+        state: State = State.STATE_UNSPECIFIED,
         create_time: datetime.datetime | str | None = None,
         update_time: datetime.datetime | str | None = None,
     ):
@@ -1597,7 +1598,7 @@ class Chunk(abc.ABC):
         # When handling updates, use to the _to_proto result of the custom_metadata
         self.custom_metadata = c_data
 
-        updates = flatten_update_paths(updates)
+        updates = utils.flatten_update_paths(updates)
         # At this time, only `data` can be updated
         for item in updates:
             if item != "data.string_value":
@@ -1637,7 +1638,7 @@ class Chunk(abc.ABC):
         # When handling updates, use to the _to_proto result of the custom_metadata
         self.custom_metadata = c_data
 
-        updates = flatten_update_paths(updates)
+        updates = utils.flatten_update_paths(updates)
         # At this time, only `data` can be updated
         for item in updates:
             if item != "data.string_value":

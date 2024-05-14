@@ -213,9 +213,9 @@ class UnitTests(parameterized.TestCase):
         self.assertEqual(
             complete.candidates,
             [
-                {"output": " road?", "safety_ratings": []},
-                {"output": " bridge?", "safety_ratings": []},
-                {"output": " river?", "safety_ratings": []},
+                {"output": " road?"},
+                {"output": " bridge?"},
+                {"output": " river?"},
             ],
         )
 

@@ -31,6 +31,8 @@ from typing_extensions import TypedDict
 import google.ai.generativelanguage as glm
 from google.generativeai.types import permission_types
 from google.generativeai import string_utils
+from google.generativeai import utils
+
 
 
 __all__ = [
@@ -142,7 +144,7 @@ def idecode_time(parent: dict["str", Any], name: str):
 
 def decode_tuned_model(tuned_model: glm.TunedModel | dict["str", Any]) -> TunedModel:
     if isinstance(tuned_model, glm.TunedModel):
-        tuned_model = type(tuned_model).to_dict(tuned_model)  # pytype: disable=attribute-error
+        tuned_model = utils.proto_to_dict(tuned_model)  # pytype: disable=attribute-error
     tuned_model["state"] = to_tuned_model_state(tuned_model.pop("state", None))
 
     base_model = tuned_model.pop("base_model", None)

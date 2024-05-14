@@ -28,6 +28,7 @@ from google.generativeai import string_utils
 from google.generativeai.types import discuss_types
 from google.generativeai.types import model_types
 from google.generativeai.types import safety_types
+from google.generativeai import utils
 
 
 def _make_message(content: discuss_types.MessageOptions) -> glm.Message:
@@ -462,7 +463,7 @@ class ChatResponse(discuss_types.ChatResponse):
     @last.setter
     def last(self, message: discuss_types.MessageOptions):
         message = _make_message(message)
-        message = type(message).to_dict(message)
+        message = utils.proto_to_dict(message)
         self.messages[-1] = message
 
     @string_utils.set_doc(discuss_types.ChatResponse.reply.__doc__)
@@ -512,13 +513,13 @@ def _build_chat_response(
     response: glm.GenerateMessageResponse,
     client: glm.DiscussServiceClient | glm.DiscussServiceAsyncClient,
 ) -> ChatResponse:
-    request = type(request).to_dict(request)
+    request = utils.proto_to_dict(request)
     prompt = request.pop("prompt")
     request["examples"] = prompt["examples"]
     request["context"] = prompt["context"]
     request["messages"] = prompt["messages"]
 
-    response = type(response).to_dict(response)
+    response = utils.proto_to_dict(response)
     response.pop("messages")
 
     response["filters"] = safety_types.convert_filters_to_enums(response["filters"])
@@ -587,4 +588,4 @@ def count_message_tokens(
 
     result = client.count_message_tokens(model=model, prompt=prompt, **request_options)
 
-    return type(result).to_dict(result)
+    return utils.proto_to_dict(result)

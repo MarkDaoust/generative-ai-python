@@ -198,8 +198,8 @@ class AsyncTests(parameterized.TestCase, unittest.IsolatedAsyncioTestCase):
 
         req = self.observed_requests[0]
 
-        self.assertLen(type(req.tools[0]).to_dict(req.tools[0]).get("function_declarations"), 3)
-        self.assertEqual(type(req.tool_config).to_dict(req.tool_config), expected_tool_config)
+        self.assertLen(utils.proto_to_dict(req.tools[0]).get("function_declarations"), 3)
+        self.assertEqual(utils.proto_to_dict(req.tool_config), expected_tool_config)
 
     @parameterized.named_parameters(
         ["basic", "Hello"],
@@ -214,7 +214,7 @@ class AsyncTests(parameterized.TestCase, unittest.IsolatedAsyncioTestCase):
         self.responses["count_tokens"] = [glm.CountTokensResponse(total_tokens=7)]
         model = generative_models.GenerativeModel("gemini-pro-vision")
         response = await model.count_tokens_async(contents)
-        self.assertEqual(type(response).to_dict(response), {"total_tokens": 7})
+        self.assertEqual(utils.proto_to_dict(response), {"total_tokens": 7})
 
     async def test_stream_generate_content_called_with_request_options(self):
         self.client.stream_generate_content = unittest.mock.AsyncMock()
