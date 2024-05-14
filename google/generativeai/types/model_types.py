@@ -110,14 +110,14 @@ class Model:
           API methods.
     """
 
-    name: str
-    base_model_id: str
-    version: str
-    display_name: str
-    description: str
-    input_token_limit: int
-    output_token_limit: int
-    supported_generation_methods: list[str]
+    name: str = ''
+    base_model_id: str = ''
+    version: str = ''
+    display_name: str = ''
+    description: str = ''
+    input_token_limit: int = ''
+    output_token_limit: int = ''
+    supported_generation_methods: list[str]|None = None
     temperature: float | None = None
     top_p: float | None = None
     top_k: int | None = None

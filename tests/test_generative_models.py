@@ -12,6 +12,7 @@ from google.generativeai import client as client_lib
 from google.generativeai import generative_models
 from google.generativeai.types import content_types
 from google.generativeai.types import generation_types
+from google.generativeai import utils
 
 import PIL.Image
 
@@ -620,7 +621,6 @@ class CUJTests(parameterized.TestCase):
             expected_tool_config={
                 "function_calling_config": {
                     "mode": content_types.FunctionCallingMode.ANY,
-                    "allowed_function_names": [],
                 }
             },
         ),
@@ -630,7 +630,6 @@ class CUJTests(parameterized.TestCase):
             expected_tool_config={
                 "function_calling_config": {
                     "mode": content_types.FunctionCallingMode.AUTO,
-                    "allowed_function_names": [],
                 }
             },
         ),
@@ -640,7 +639,6 @@ class CUJTests(parameterized.TestCase):
             expected_tool_config={
                 "function_calling_config": {
                     "mode": content_types.FunctionCallingMode.NONE,
-                    "allowed_function_names": [],
                 }
             },
         ),
@@ -654,7 +652,6 @@ class CUJTests(parameterized.TestCase):
             expected_tool_config={
                 "function_calling_config": {
                     "mode": content_types.FunctionCallingMode.AUTO,
-                    "allowed_function_names": [],
                 }
             },
         ),
@@ -683,7 +680,6 @@ class CUJTests(parameterized.TestCase):
             expected_tool_config={
                 "function_calling_config": {
                     "mode": content_types.FunctionCallingMode.NONE,
-                    "allowed_function_names": [],
                 }
             },
         ),

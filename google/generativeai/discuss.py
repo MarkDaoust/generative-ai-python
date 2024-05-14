@@ -515,14 +515,16 @@ def _build_chat_response(
 ) -> ChatResponse:
     request = utils.proto_to_dict(request)
     prompt = request.pop("prompt")
-    request["examples"] = prompt["examples"]
-    request["context"] = prompt["context"]
-    request["messages"] = prompt["messages"]
+    request["examples"] = prompt.get("examples", None)
+    request["context"] = prompt.get("examples", None)
+    request["messages"] = prompt.get("examples", None)
 
     response = utils.proto_to_dict(response)
-    response.pop("messages")
+    response.pop("messages", None)
 
-    response["filters"] = safety_types.convert_filters_to_enums(response["filters"])
+    filters = response.get("filters", None)
+    if filters is not None:
+      response["filters"] = safety_types.convert_filters_to_enums(filters)
 
     if response["candidates"]:
         last = response["candidates"][0]

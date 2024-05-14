@@ -14,16 +14,14 @@
 # limitations under the License.
 
 import collections
-import sys
 from collections.abc import Iterable
-import os
-from typing import Any
 import unittest
 
 
 from google.generativeai import client as client_lib
 from google.generativeai import generative_models
 from google.generativeai.types import content_types
+from google.generativeai import utils
 import google.ai.generativelanguage as glm
 
 from absl.testing import absltest
@@ -115,7 +113,6 @@ class AsyncTests(parameterized.TestCase, unittest.IsolatedAsyncioTestCase):
             expected_tool_config={
                 "function_calling_config": {
                     "mode": content_types.FunctionCallingMode.ANY,
-                    "allowed_function_names": [],
                 }
             },
         ),
@@ -125,7 +122,6 @@ class AsyncTests(parameterized.TestCase, unittest.IsolatedAsyncioTestCase):
             expected_tool_config={
                 "function_calling_config": {
                     "mode": content_types.FunctionCallingMode.AUTO,
-                    "allowed_function_names": [],
                 }
             },
         ),
@@ -135,7 +131,6 @@ class AsyncTests(parameterized.TestCase, unittest.IsolatedAsyncioTestCase):
             expected_tool_config={
                 "function_calling_config": {
                     "mode": content_types.FunctionCallingMode.NONE,
-                    "allowed_function_names": [],
                 }
             },
         ),
@@ -149,7 +144,6 @@ class AsyncTests(parameterized.TestCase, unittest.IsolatedAsyncioTestCase):
             expected_tool_config={
                 "function_calling_config": {
                     "mode": content_types.FunctionCallingMode.AUTO,
-                    "allowed_function_names": [],
                 }
             },
         ),
@@ -178,7 +172,6 @@ class AsyncTests(parameterized.TestCase, unittest.IsolatedAsyncioTestCase):
             expected_tool_config={
                 "function_calling_config": {
                     "mode": content_types.FunctionCallingMode.NONE,
-                    "allowed_function_names": [],
                 }
             },
         ),

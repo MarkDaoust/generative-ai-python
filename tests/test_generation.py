@@ -7,6 +7,7 @@ from absl.testing import absltest
 from absl.testing import parameterized
 import google.ai.generativelanguage as glm
 from google.generativeai.types import generation_types
+from google.generativeai import utils
 
 
 class Date(TypedDict):
@@ -93,9 +94,9 @@ class UnitTests(parameterized.TestCase):
 
         expected = [
             {"category": 6, "probability": 4, "blocked": True},
-            {"category": 5, "probability": 2, "blocked": False},
-            {"category": 4, "probability": 2, "blocked": False},
-            {"category": 1, "probability": 2, "blocked": False},
+            {"category": 5, "probability": 2},
+            {"category": 4, "probability": 2},
+            {"category": 1, "probability": 2},
         ]
         self.assertEqual(expected, [utils.proto_to_dict(r) for r in result])
 
