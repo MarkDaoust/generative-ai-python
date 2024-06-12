@@ -38,9 +38,16 @@ def strip_oneof(docstring):
     return "\n".join(lines)
 
 
-def prettyprint(cls):
-    cls.__str__ = _prettyprint
-    cls.__repr__ = _prettyprint
+def prettyprint(cls=None, fieldnames=None):
+    if cls is None:
+        def decorate_with_filednames(cls):
+            return prettyprint(cls, fieldnames=fieldnames)
+
+
+    def _prettyprint_with_fieldnames(self):
+        return _prettyprint(self, fieldnames=fieldnames)
+    cls.__str__ = _prettyprint_with_fieldnames
+    cls.__repr__ = _prettyprint_with_fieldnames
     return cls
 
 
@@ -48,7 +55,7 @@ repr = reprlib.Repr()
 
 
 @reprlib.recursive_repr()
-def _prettyprint(self):
+def _prettyprint(self, fieldnames=None):
     """A dataclass prettyprint function you can use in __str__or __repr__.
 
     Note: You can't set `__str__ = pprint.pformat` because it causes a recursion error.
@@ -59,7 +66,9 @@ def _prettyprint(self):
     * This will contract long object reprs to ClassName(...).
     """
     fields = []
-    for f in dataclasses.fields(self):
+    if fieldnames is None:
+        fieldnames = dataclasses.fields(self)
+    for f in fieldnames:
         s = pprint.pformat(getattr(self, f.name))
         class_re = r"^(\w+)\(.*\)$"
         if s.count("\n") >= 10:
