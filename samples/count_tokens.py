@@ -74,7 +74,9 @@ class UnitTests(absltest.TestCase):
             model=model_name,
             contents=[document],
         )
-        print(genai.GenerativeModel().count_tokens(cache))
+
+        model = genai.GenerativeModel.from_cached_content(cache)
+        print(model.count_tokens('hello'))
         # [END tokens_cached_content]
         cache.delete()  # Clear
 
