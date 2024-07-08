@@ -119,6 +119,7 @@ class Model:
     temperature: float | None = None
     top_p: float | None = None
     top_k: int | None = None
+    max_temperature: float | None = None
 
 
 def _fix_microseconds(match):
