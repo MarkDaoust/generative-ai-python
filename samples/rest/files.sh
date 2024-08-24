@@ -1,5 +1,9 @@
 set -eu
 
+project_id="genai-test-jknqrolevofqegxtsud"
+access_token=$(gcloud auth application-default print-access-token)
+
+
 SCRIPT_DIR=$(dirname "$0")
 MEDIA_DIR=$(realpath ${SCRIPT_DIR}/../../third_party)
 
@@ -22,8 +26,10 @@ tmp_header_file=upload-header.tmp
 
 # Initial resumable request defining metadata.
 # The upload url is in the response headers dump them to a file.
-curl "${BASE_URL}/upload/v1beta/files?key=${GOOGLE_API_KEY}" \
+curl "${BASE_URL}/upload/v1beta/files" \
   -D upload-header.tmp \
+  -H "Authorization: Bearer ${access_token}" \
+  -H "x-goog-user-project: ${project_id}" \
   -H "X-Goog-Upload-Protocol: resumable" \
   -H "X-Goog-Upload-Command: start" \
   -H "X-Goog-Upload-Header-Content-Length: ${NUM_BYTES}" \
@@ -33,6 +39,8 @@ curl "${BASE_URL}/upload/v1beta/files?key=${GOOGLE_API_KEY}" \
 
 upload_url=$(grep -i "x-goog-upload-url: " "${tmp_header_file}" | cut -d" " -f2 | tr -d "\r")
 rm "${tmp_header_file}"
+
+echo $upload_url
 
 # Upload the actual bytes.
 curl "${upload_url}" \
@@ -45,7 +53,7 @@ file_uri=$(jq ".file.uri" file_info.json)
 echo file_uri=$file_uri
 
 # Now generate content using that file
-curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$GOOGLE_API_KEY" \
+curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent" \
     -H 'Content-Type: application/json' \
     -X POST \
     -d '{

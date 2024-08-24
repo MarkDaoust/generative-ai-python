@@ -1,10 +1,9 @@
 set -eu
 
-access_token=$(gcloud auth application-default print-access-token)
-
-
 echo "[START tuned_models_create]"
 # [START tuned_models_create]
+access_token=$(gcloud auth application-default print-access-token)
+
 curl -X POST https://generativelanguage.googleapis.com/v1beta/tunedModels \
     -H 'Content-Type: application/json' \
     -H "Authorization: Bearer ${access_token}" \
