@@ -11,8 +11,8 @@ from collections.abc import Sequence
 import httplib2
 from io import IOBase
 
-import google.ai.generativelanguage as glm
 import google.generativeai.protos as protos
+import google.ai.generativelanguage_v1beta as glm
 
 from google.auth import credentials as ga_credentials
 from google.auth import exceptions as ga_exceptions
@@ -299,7 +299,7 @@ class _ClientManager:
         return client
 
 
-def configure(
+def _configure(
     *,
     api_key: str | None = None,
     credentials: ga_credentials.Credentials | dict | None = None,

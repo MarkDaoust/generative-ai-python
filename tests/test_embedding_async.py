@@ -33,7 +33,7 @@ class AsyncTests(parameterized.TestCase, unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.client = unittest.mock.AsyncMock()
 
-        client_lib._client_manager.clients["generative_async"] = self.client
+        client_lib._client._client_manager.clients["generative_async"] = self.client
 
         self.observed_requests = []
 

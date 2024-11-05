@@ -14,31 +14,31 @@ from google.generativeai import client
 class ClientTests(parameterized.TestCase):
     def setUp(self):
         super().setUp()
-        client._client_manager = client._ClientManager()
+        client._client._client_manager = client._client._ClientManager()
 
     def test_api_key_passed_directly(self):
         client.configure(api_key="AIzA_direct")
 
-        client_opts = client._client_manager.client_config["client_options"]
+        client_opts = client._client._client_manager.client_config["client_options"]
         self.assertEqual(client_opts.api_key, "AIzA_direct")
 
     def test_api_key_passed_via_client_options(self):
         client_opts = client_options.ClientOptions(api_key="AIzA_client_opts")
         client.configure(client_options=client_opts)
 
-        client_opts = client._client_manager.client_config["client_options"]
+        client_opts = client._client._client_manager.client_config["client_options"]
         self.assertEqual(client_opts.api_key, "AIzA_client_opts")
 
     @mock.patch.dict(os.environ, {"GOOGLE_API_KEY": "AIzA_env"})
     def test_api_key_from_environment(self):
         # Default to API key loaded from environment.
         client.configure()
-        client_opts = client._client_manager.client_config["client_options"]
+        client_opts = client._client._client_manager.client_config["client_options"]
         self.assertEqual(client_opts.api_key, "AIzA_env")
 
         # But not when a key is provided explicitly.
         client.configure(api_key="AIzA_client")
-        client_opts = client._client_manager.client_config["client_options"]
+        client_opts = client._client._client_manager.client_config["client_options"]
         self.assertEqual(client_opts.api_key, "AIzA_client")
 
     def test_api_key_cannot_be_set_twice(self):
@@ -53,7 +53,7 @@ class ClientTests(parameterized.TestCase):
         client_opts = client_options.ClientOptions(api_endpoint="web.site")
         client.configure(api_key="AIzA_client", client_options=client_opts)
 
-        actual_client_opts = client._client_manager.client_config["client_options"]
+        actual_client_opts = client._client._client_manager.client_config["client_options"]
         self.assertEqual(actual_client_opts.api_key, "AIzA_client")
         self.assertEqual(actual_client_opts.api_endpoint, "web.site")
 
@@ -75,7 +75,7 @@ class ClientTests(parameterized.TestCase):
         _ = factory_fn()
 
         # And ensure that it has set the default options.
-        actual_client_opts = client._client_manager.client_config["client_options"]
+        actual_client_opts = client._client._client_manager.client_config["client_options"]
         self.assertEqual(actual_client_opts.api_key, "AIzA_env")
 
     class DummyClient:
@@ -121,10 +121,10 @@ class ClientTests(parameterized.TestCase):
         self.assertTrue(ClientTests.DummyClient.called_classm)
 
     def test_same_config(self):
-        cm1 = client._ClientManager()
+        cm1 = client._client._ClientManager()
         cm1.configure(api_key="abc")
 
-        cm2 = client._ClientManager()
+        cm2 = client._client._ClientManager()
         cm2.configure(client_options=dict(api_key="abc"))
 
         self.assertEqual(

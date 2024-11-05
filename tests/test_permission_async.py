@@ -34,9 +34,9 @@ class AsyncTests(parameterized.TestCase, unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.client = unittest.mock.AsyncMock()
 
-        client._client_manager.clients["retriever_async"] = self.client
-        client._client_manager.clients["permission_async"] = self.client
-        client._client_manager.clients["model"] = self.client
+        client._client._client_manager.clients["retriever_async"] = self.client
+        client._client._client_manager.clients["permission_async"] = self.client
+        client._client._client_manager.clients["model"] = self.client
 
         self.observed_requests = []
 

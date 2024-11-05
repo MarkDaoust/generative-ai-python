@@ -70,6 +70,24 @@ Additional arguments are described in the docstring:
 
 >>> help(proto.Part.to_dict)
 """
-
 from google.ai.generativelanguage_v1beta.types import *
-from google.ai.generativelanguage_v1beta.types import __all__
+
+import sys
+import os
+
+_version = os.environ.get('GEMINI_API_VERSION', 'v1beta')
+
+
+def _configure(version):
+    g = globals()
+    # Clear out the previously loaded version
+    types = sys.modules[f"google.ai.generativelanguage_{_version}.types"]
+    for name in types.__dict__:
+        if not name.startswith('_'):
+            del g[name]
+
+    g['_version'] = version
+    types = sys.modules[f"google.ai.generativelanguage_{_version}.types"]
+    for name, value in types.__dict__.items():
+        if not name.startswith('_'):
+            g[name] = value

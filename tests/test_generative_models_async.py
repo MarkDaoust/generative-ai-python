@@ -40,7 +40,7 @@ class AsyncTests(parameterized.TestCase, unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.client = unittest.mock.MagicMock()
 
-        client_lib._client_manager.clients["generative_async"] = self.client
+        client_lib._client._client_manager.clients["generative_async"] = self.client
 
         def add_client_method(f):
             name = f.__name__

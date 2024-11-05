@@ -88,7 +88,7 @@ class UnitTests(parameterized.TestCase):
     def setUp(self):
         self.client = FileServiceClient(self)
 
-        client_lib._client_manager.clients["file"] = self.client
+        client_lib._client._client_manager.clients["file"] = self.client
 
     @property
     def observed_requests(self):

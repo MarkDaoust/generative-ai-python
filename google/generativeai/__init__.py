@@ -43,10 +43,7 @@ from __future__ import annotations
 from google.generativeai import version
 
 from google.generativeai import caching
-from google.generativeai import protos
 from google.generativeai import types
-
-from google.generativeai.client import configure
 
 from google.generativeai.embedding import embed_content
 from google.generativeai.embedding import embed_content_async

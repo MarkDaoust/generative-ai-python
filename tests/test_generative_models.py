@@ -110,8 +110,8 @@ class CUJTests(parameterized.TestCase):
 
     def setUp(self):
         self.client = MockGenerativeServiceClient(self)
-        client_lib._client_manager.clients["generative"] = self.client
-        client_lib._client_manager.clients["cache"] = self.client
+        client_lib._client._client_manager.clients["generative"] = self.client
+        client_lib._client._client_manager.clients["cache"] = self.client
 
     def test_hello(self):
         # Generate text from text prompt

@@ -55,7 +55,7 @@ class HelperTests(parameterized.TestCase):
 
     def setUp(self):
         self.client = MockModelClient(self)
-        client._client_manager.clients["model"] = self.client
+        client._client._client_manager.clients["model"] = self.client
 
         self.observed_requests = []
         self.observed_retry = []
